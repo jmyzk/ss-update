@@ -6,6 +6,15 @@ import json
 import os
 from google.cloud import secretmanager
 
+with open('config.json') as f:
+    data = json.load(f)
+    email = data['email']
+    subject = data['subject']
+
+
+print("email: " ,email)
+print("subject: ", subject)
+
 def get_secret(secret_name):
     client = secretmanager.SecretManagerServiceClient()
     project_id = os.getenv('GCP_PROJECT')
