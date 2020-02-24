@@ -11,7 +11,6 @@ with open('config.json') as f:
     email = data['email']
     subject = data['subject']
 
-
 print("email: " ,email)
 print("subject: ", subject)
 
@@ -28,11 +27,7 @@ sql_pw = get_secret('sql_pw')
 print(sql_pw)
 smartsheet_client = smartsheet.Smartsheet(access_token)
 target_sheetid = os.environ.get('target_sheetid', 'Specified environment variable is not set.')
-<<<<<<< HEAD
-#vtarget_sheetid = "xxxx 1697155573409668"
-=======
 # target_sheetid = "xxxx 1697155573409668"
->>>>>>> 03f7f83b2797fe22f4cebd792713da58dd5811fd
 def hello_pubsub(event, context):
     sheetid = base64.b64decode(event['data']).decode('utf-8')
     if sheetid == target_sheetid:
