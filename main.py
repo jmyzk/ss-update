@@ -25,6 +25,7 @@ def get_secret(secret_name):
 
 access_token = get_secret('smartsheet-access-token')
 sql_pw = get_secret('cloud-sql-pw')
+print(sql_pw)
 # access_token = "luc6e8gxpjz2xxipkv5900ta68"
 smartsheet_client = smartsheet.Smartsheet(access_token)
 #target_sheetid = "1697155573409668"
