@@ -23,7 +23,7 @@ def get_secret(secret_name):
     return secret_string
 
 access_token = get_secret('smartsheet-access-token')
-sql_pw = get_secret('sql_pw')
+sql_pw = get_secret('cloud-sql-pw')
 print(sql_pw)
 smartsheet_client = smartsheet.Smartsheet(access_token)
 target_sheetid = os.environ.get('target_sheetid', 'Specified environment variable is not set.')
