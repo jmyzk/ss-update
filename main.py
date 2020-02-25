@@ -35,7 +35,7 @@ def hello_pubsub(event, context):
 
 def updateRow(rowId, postcode, columnIds):
 #    sql = "select postName, postType, BC, email, tel, address from postcodeMaster where postcode = " + postcode
-    update_query = query + postocde
+    update_query = query + postcode
     try:
         # connect to mysql
         connection = mysql.connector.connect(
