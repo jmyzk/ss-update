@@ -35,6 +35,7 @@ def hello_pubsub(event, context):
 
 def updateRow(rowId, postcode, columnIds):
 #    sql = "select postName, postType, BC, email, tel, address from postcodeMaster where postcode = " + postcode
+    update_query = query + postocde
     try:
         # connect to mysql
         connection = mysql.connector.connect(
@@ -47,7 +48,7 @@ def updateRow(rowId, postcode, columnIds):
         cursor = connection.cursor()
         try:
             # run query
-            cursor.execute(query,postcode)
+            cursor.execute(update_query)
             results = cursor.fetchone()
             print(results)
             new_row = smartsheet.models.Row()
@@ -107,8 +108,8 @@ def update_sheet(sheetid):
         for cell in cells:
             if cell['columnId'] == postcodeColumnId:
                 if "value" in cell:
-                    # postcode = str(int(cell["value"])).zfill(6)
-                    postcode = int(cell["value"])
+                    postcode = str(int(cell["value"])).zfill(6)
+                    # postcode = int(cell["value"])
                     print("postcode = ", postcode)
                 else:
                     postcode = "no postcode value"

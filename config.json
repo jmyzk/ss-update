@@ -1,5 +1,5 @@
 {
   "sheetid": "1697155573409668",
-  "query": "select postName, postType, BC, email, tel, address from postcodeMaster where postcode = %s",
+  "query": "select postName, postType, BC, email, tel, address from postcodeMaster where postcode = ",
   "city": "New York"
 }
