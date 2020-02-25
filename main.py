@@ -8,11 +8,11 @@ from google.cloud import secretmanager
 
 with open('config.json') as f:
     data = json.load(f)
-    email = data['email']
-    subject = data['subject']
+    target_sheetid = data['sheetid']
+    query = data['query']
 
-print("email: " ,email)
-print("subject: ", subject)
+print("target_sheetid: " , target_sheetid)
+print("query: ", query)
 
 def get_secret(secret_name):
     client = secretmanager.SecretManagerServiceClient()
@@ -26,7 +26,7 @@ access_token = get_secret('smartsheet-access-token')
 sql_pw = get_secret('cloud-sql-pw')
 print(sql_pw)
 smartsheet_client = smartsheet.Smartsheet(access_token)
-target_sheetid = os.environ.get('target_sheetid', 'Specified environment variable is not set.')
+# target_sheetid = os.environ.get('target_sheetid', 'Specified environment variable is not set.')
 # target_sheetid = "xxxx 1697155573409668"
 def hello_pubsub(event, context):
     sheetid = base64.b64decode(event['data']).decode('utf-8')
@@ -34,7 +34,7 @@ def hello_pubsub(event, context):
         update_sheet(sheetid)
 
 def updateRow(rowId, postcode, columnIds):
-    sql = "select postName, postType, BC, email, tel, address from postcodeMaster where postcode = " + postcode
+#    sql = "select postName, postType, BC, email, tel, address from postcodeMaster where postcode = " + postcode
     try:
         # connect to mysql
         connection = mysql.connector.connect(
@@ -47,7 +47,7 @@ def updateRow(rowId, postcode, columnIds):
         cursor = connection.cursor()
         try:
             # run query
-            cursor.execute(sql)
+            cursor.execute(query,postcode)
             results = cursor.fetchone()
             print(results)
             new_row = smartsheet.models.Row()
