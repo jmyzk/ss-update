@@ -107,7 +107,9 @@ def update_sheet(sheetid):
         for cell in cells:
             if cell['columnId'] == postcodeColumnId:
                 if "value" in cell:
-                    postcode = str(int(cell["value"])).zfill(6)
+                    # postcode = str(int(cell["value"])).zfill(6)
+                    postcode = int(cell["value"])
+                    print("postcode = ", postcode)
                 else:
                     postcode = "no postcode value"
             if cell['columnId'] == truePostNameColumnId:
