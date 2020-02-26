@@ -13,9 +13,6 @@ with open('config.json') as f:
     key_column_name = data['key_column_name']
     update_column_names = data['update_column_names']
 
-print("target_sheetid: " , target_sheetid)
-print("query: ", query)
-
 def get_secret(secret_name):
     client = secretmanager.SecretManagerServiceClient()
     project_id = os.getenv('GCP_PROJECT')
