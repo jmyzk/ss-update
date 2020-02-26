@@ -49,7 +49,7 @@ def updateRow(rowId, key, update_column_ids):
         try:
             # run query
             # cursor.execute(update_query)
-            cursor.execute(query, key)
+            cursor.execute((query), (key))
             results = cursor.fetchone()
             print(results)
             new_row = smartsheet.models.Row()
