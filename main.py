@@ -7,11 +7,11 @@ import os
 from google.cloud import secretmanager
 
 with open('config.json') as f:
-    data = json.load(f)
-    target_sheetid = data['sheetid']
-    query = data['query']
-    key_column_name = data['key_column_name']
-    update_column_names = data['update_column_names']
+    config_data = json.load(f)
+    target_sheetid = config_data['sheetid']
+    query = config_data['query']
+    key_column_name = config_data['key_column_name']
+    update_column_names = config_data['update_column_names']
 
 print("target_sheetid: " , target_sheetid)
 print("query: ", query)
@@ -21,7 +21,7 @@ def get_secret(secret_name):
     project_id = os.getenv('GCP_PROJECT')
     name = client.secret_version_path(project_id, secret_name, '1')
     res = client.access_secret_version(name)
-    secret_string = res.payload.data.decode('utf-8')
+    secret_string = res.payload.config.decode('utf-8')
     return secret_string
 
 access_token = get_secret('smartsheet-access-token')
@@ -35,9 +35,9 @@ def hello_pubsub(event, context):
     if sheetid == target_sheetid:
         update_sheet(sheetid)
 
-def updateRow(rowId, postcode, columnIds):
+def updateRow(rowId, key, columnIds):
 #    sql = "select postName, postType, BC, email, tel, address from postcodeMaster where postcode = " + postcode
-    update_query = query + postcode
+    update_query = query + key
     try:
         # connect to mysql
         connection = mysql.connector.connect(
@@ -93,7 +93,7 @@ def update_sheet(sheetid):
     # get columnIds for update columns in smartsheet
     update_column_ids = []
     for update_column_name in update_column_names:
-        update_column_ids.append(column_dic[update_column_name])
+        update_column_ids.append(colun_dic[update_column_name])
     print(update_column_ids)
     columnIds = [
         column_dic['局所コード'],
@@ -105,8 +105,9 @@ def update_sheet(sheetid):
         column_dic['局住所']
     ]
     print(columnIds)
-    postcodeColumnId = columnIds[0]
-    truePostNameColumnId = columnIds[1]
+    # postcodeColumnId = columnIds[0]
+    first_update_column_id = update_column_ids[0]
+    # truePostNameColumnId = columnIds[1]
     rows = data["rows"]
     totalRow = data["totalRowCount"]
     rowsToUpdate = []
@@ -115,21 +116,23 @@ def update_sheet(sheetid):
         rowId = rows[i]['id']
         cells = rows[i]['cells']
         for cell in cells:
-            if cell['columnId'] == postcodeColumnId:
+            if cell['columnId'] == key_column_id:
+            # if cell['columnId'] == postcodeColumnId:
                 if "value" in cell:
-                    postcode = str(int(cell["value"])).zfill(6)
+                    key = str(int(cell["value"])).zfill(6)
                     # postcode = int(cell["value"])
-                    print("postcode = ", postcode)
+                    print("key = ", key)
                 else:
-                    postcode = "no postcode value"
-            if cell['columnId'] == truePostNameColumnId:
+                    key = "no key value"
+            # if cell['columnId'] == truePostNameColumnId:
+            if cell['columnId'] == first_update_column_id:
                 if "value" in cell:
-                    truePostNameExists = True
+                    first_update_column_value_exists = True
                 else:
-                    truePostNameExists = False
-        if postcode != "no postcode value" and not truePostNameExists:
-            print("update postcode : " , postcode)
-            rowToUpdate = updateRow(rowId, postcode, columnIds)
+                    first_update_column_value_exists = False
+        if key != "no key value" and not first_update_column_value_exists:
+            print("update using key : " , key)
+            rowToUpdate = updateRow(rowId, key, columnIds)
             if not rowToUpdate == "no data":
                 rowsToUpdate.append(rowToUpdate)
     smartsheet_client.Sheets.update_rows(sheetid, rowsToUpdate)
