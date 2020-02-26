@@ -10,6 +10,8 @@ with open('config.json') as f:
     data = json.load(f)
     target_sheetid = data['sheetid']
     query = data['query']
+    key_column_name = data['key_column_name']
+    update_column_names = data['update_column_names']
 
 print("target_sheetid: " , target_sheetid)
 print("query: ", query)
@@ -86,6 +88,13 @@ def update_sheet(sheetid):
         id = column["id"]
         title = column["title"]
         column_dic.update({title: id})
+    # get columnId for key column in smartsheet
+    key_column_id = column_dic[key_column_name]
+    # get columnIds for update columns in smartsheet
+    update_column_ids = []
+    for update_column_name in update_column_names:
+        update_column_ids.append(colun_dic[update_column_name])
+    print(update_column_ids)
     columnIds = [
         column_dic['局所コード'],
         column_dic['正局所名'],
@@ -95,7 +104,7 @@ def update_sheet(sheetid):
         column_dic['局電話'],
         column_dic['局住所']
     ]
-
+    print(columnIds)
     postcodeColumnId = columnIds[0]
     truePostNameColumnId = columnIds[1]
     rows = data["rows"]
