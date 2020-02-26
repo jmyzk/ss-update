@@ -127,16 +127,16 @@ def update_sheet(sheetid):
                 if "value" in cell:
                     key = str(int(cell["value"])).zfill(6)
                     # postcode = int(cell["value"])
-                    print("keye = ", key)
+                    print("key = ", key)
                 else:
-                    key_value_exist = False
+                    key = False
             if cell['columnId'] == first_update_column_id:
             # if cell['columnId'] == truePostNameColumnId:
                 if "value" in cell:
                     first_update_column_value_exists = True
                 else:
                     first_update_column_value_exists = False
-        if key_value_exist and not first_update_column_value_exists:
+        if key and not first_update_column_value_exists:
             print("update key : " , key)
             rowToUpdate = updateRow(rowId, key, columnIds)
             if not rowToUpdate == "no data":
