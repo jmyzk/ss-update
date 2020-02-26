@@ -35,7 +35,7 @@ def hello_pubsub(event, context):
         update_sheet(sheetid)
 
 def updateRow(rowId, key, update_column_ids):
-    update_query = query + key
+    # update_query = query + key
     try:
         # connect to mysql
         connection = mysql.connector.connect(
@@ -48,7 +48,8 @@ def updateRow(rowId, key, update_column_ids):
         cursor = connection.cursor()
         try:
             # run query
-            cursor.execute(update_query)
+            # cursor.execute(update_query)
+            cursor.execute(query, key)
             results = cursor.fetchone()
             print(results)
             new_row = smartsheet.models.Row()

@@ -1,6 +1,6 @@
 {
   "sheetid": "1697155573409668",
-  "query": "select postName, postType, BC, email, tel from postcodeMaster where postcode = ",
+  "query": "select postName, postType, BC, email, tel from postcodeMaster where postcode = %s",
   "key_column_name" : "局所コード",
   "update_column_names": ["正局所名","正局種","物流センター","局email","局電話"]
 }
