@@ -36,9 +36,9 @@ def hello_pubsub(event, context):
     if sheetid == target_sheetid:
         update_sheet(sheetid)
 
-def updateRow(rowId, postcode, columnIds):
+def updateRow(rowId, key, update_column_ids):
 #    sql = "select postName, postType, BC, email, tel, address from postcodeMaster where postcode = " + postcode
-    update_query = query + postcode
+    update_query = query + key
     try:
         # connect to mysql
         connection = mysql.connector.connect(
@@ -56,14 +56,14 @@ def updateRow(rowId, postcode, columnIds):
             print(results)
             new_row = smartsheet.models.Row()
             new_row.id = rowId
-            columnIdNumber = 1
+            update_column_id_number = 0
             for result in results:
                 new_cell = smartsheet.models.Cell()
-                new_cell.column_id = columnIds[columnIdNumber]
+                new_cell.column_id = update_column_ids[update_column_id_number]
                 new_cell.value = result
                 new_cell.strict = False
                 new_row.cells.append(new_cell)
-                columnIdNumber  += 1
+                update_column_id_number  += 1
             return new_row
         except:
             # no results
@@ -138,7 +138,7 @@ def update_sheet(sheetid):
                     first_update_column_value_exists = False
         if key and not first_update_column_value_exists:
             print("update key : " , key)
-            rowToUpdate = updateRow(rowId, key, columnIds)
+            rowToUpdate = updateRow(rowId, key, update_column_ids)
             if not rowToUpdate == "no data":
                 rowsToUpdate.append(rowToUpdate)
     smartsheet_client.Sheets.update_rows(sheetid, rowsToUpdate)
