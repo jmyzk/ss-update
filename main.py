@@ -108,8 +108,9 @@ def update_sheet(sheetid):
         cells = rows[i]['cells']
         for cell in cells:
             if cell['columnId'] == key_column_id:
-                if "value" in cell:
-                    key = str(int(cell["value"])).zfill(6)
+                if "displayValue" in cell:
+                    key = cell["displayValue"]
+                    # key = str(int(cell["value"])).zfill(6)
                     print("key = ", key)
                 else:
                     key = False
