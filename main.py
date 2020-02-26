@@ -94,7 +94,7 @@ def update_sheet(sheetid):
     # get columnIds for update columns in smartsheet
     update_column_ids = []
     for update_column_name in update_column_names:
-        update_column_ids.append(column_dic[update_column_name])
+        update_column_ids.append(colun_dic[update_column_name])
     print(update_column_ids)
     columnIds = [
         column_dic['局所コード'],
