@@ -13,6 +13,9 @@ with open('config.json') as f:
     key_column_name = data['key_column_name']
     update_column_names = data['update_column_names']
 
+print("target_sheetid: " , target_sheetid)
+print("query: ", query)
+
 def get_secret(secret_name):
     client = secretmanager.SecretManagerServiceClient()
     project_id = os.getenv('GCP_PROJECT')
@@ -23,11 +26,12 @@ def get_secret(secret_name):
 
 access_token = get_secret('smartsheet-access-token')
 sql_pw = get_secret('cloud-sql-pw')
-
+print(sql_pw)
 smartsheet_client = smartsheet.Smartsheet(access_token)
+# target_sheetid = os.environ.get('target_sheetid', 'Specified environment variable is not set.')
 # target_sheetid = "xxxx 1697155573409668"
 
-def update_on_pubsub(event, context):
+def hello_pubsub(event, context):
     sheetid = base64.b64decode(event['data']).decode('utf-8')
     if sheetid == target_sheetid:
         update_sheet(sheetid)
@@ -80,7 +84,6 @@ def update_sheet(sheetid):
     data = json.loads(str(smart_sheet))
     # get columnId for target columns
     columns = data["columns"]
-    # get column_dic
     column_dic={}
     for column in columns:
         id = column["id"]
@@ -91,7 +94,7 @@ def update_sheet(sheetid):
     # get columnIds for update columns in smartsheet
     update_column_ids = []
     for update_column_name in update_column_names:
-        update_column_ids.append(colun_dic[update_column_name])
+        update_column_ids.append(column_dic[update_column_name])
     print(update_column_ids)
     columnIds = [
         column_dic['局所コード'],
