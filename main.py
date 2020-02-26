@@ -48,7 +48,7 @@ def updateRow(rowId, key, update_column_ids):
         cursor = connection.cursor()
         try:
             # run query
-            # cursor.execute(update_query)
+            # cursor.execute(query,(tuple,,))
             cursor.execute(query, (key,))
             results = cursor.fetchone()
             print(results)
