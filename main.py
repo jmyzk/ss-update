@@ -12,9 +12,9 @@ with open('config.json') as f:
     query = data['query']
     key_column_name = data['key_column_name']
     update_column_names = data['update_column_names']
+# target_sheetid = "xxxx 1697155573409668"
 
 print("target_sheetid: " , target_sheetid)
-print("query: ", query)
 
 def get_secret(secret_name):
     client = secretmanager.SecretManagerServiceClient()
@@ -25,11 +25,9 @@ def get_secret(secret_name):
     return secret_string
 
 access_token = get_secret('smartsheet-access-token')
-sql_pw = get_secret('cloud-sql-pw')
-print(sql_pw)
 smartsheet_client = smartsheet.Smartsheet(access_token)
-# target_sheetid = os.environ.get('target_sheetid', 'Specified environment variable is not set.')
-# target_sheetid = "xxxx 1697155573409668"
+
+sql_pw = get_secret('cloud-sql-pw')
 
 def hello_pubsub(event, context):
     sheetid = base64.b64decode(event['data']).decode('utf-8')
@@ -37,7 +35,6 @@ def hello_pubsub(event, context):
         update_sheet(sheetid)
 
 def updateRow(rowId, key, update_column_ids):
-#    sql = "select postName, postType, BC, email, tel, address from postcodeMaster where postcode = " + postcode
     update_query = query + key
     try:
         # connect to mysql
@@ -82,37 +79,25 @@ def updateRow(rowId, key, update_column_ids):
 def update_sheet(sheetid):
     smart_sheet = smartsheet_client.Sheets.get_sheet(sheetid)
     data = json.loads(str(smart_sheet))
-    # get columnId for target columns
+
+    # set column_dic for target columns
     columns = data["columns"]
     column_dic={}
     for column in columns:
         id = column["id"]
         title = column["title"]
         column_dic.update({title: id})
+
     # get columnId for key column in smartsheet
-    # key_column_id = column_dic[key_column_name]
-    # get columnIds for update columns in smartsheet
+    key_column_id = column_dic[key_column_name]
+
+    # get column ids for target update columns
     update_column_ids = []
     for update_column_name in update_column_names:
         update_column_ids.append(column_dic[update_column_name])
-    print(update_column_ids)
-    columnIds = [
-        column_dic['局所コード'],
-        column_dic['正局所名'],
-        column_dic['正局種'],
-        column_dic['物流センター'],
-        column_dic['局email'],
-        column_dic['局電話'],
-        column_dic['局住所']
-    ]
-    print(columnIds)
-    # postcodeColumnId > key_column_id
-    key_column_id = column_dic[key_column_name]
-    # postcodeColumnId = columnIds[0]
 
-    # truePostNameColumnId > update_column_id
+    # get column id for first column in target columns to test if value exists
     first_update_column_id = update_column_ids[0]
-    # truePostNameColumnId = columnIds[1]
 
     rows = data["rows"]
     totalRow = data["totalRowCount"]
@@ -123,15 +108,12 @@ def update_sheet(sheetid):
         cells = rows[i]['cells']
         for cell in cells:
             if cell['columnId'] == key_column_id:
-            # if cell['columnId'] == postcodeColumnId:
                 if "value" in cell:
                     key = str(int(cell["value"])).zfill(6)
-                    # postcode = int(cell["value"])
                     print("key = ", key)
                 else:
                     key = False
             if cell['columnId'] == first_update_column_id:
-            # if cell['columnId'] == truePostNameColumnId:
                 if "value" in cell:
                     first_update_column_value_exists = True
                 else:
