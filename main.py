@@ -90,7 +90,7 @@ def update_sheet(sheetid):
         title = column["title"]
         column_dic.update({title: id})
     # get columnId for key column in smartsheet
-    key_column_id = column_dic[key_column_name]
+    # key_column_id = column_dic[key_column_name]
     # get columnIds for update columns in smartsheet
     update_column_ids = []
     for update_column_name in update_column_names:
@@ -106,8 +106,14 @@ def update_sheet(sheetid):
         column_dic['局住所']
     ]
     print(columnIds)
+    # postcodeColumnId > key_column_id
+    key_column_id = column_dic[key_column_name]
     postcodeColumnId = columnIds[0]
+
+    # truePostNameColumnId > update_column_id
+    first_update_column_id = update_column_ids[0]
     truePostNameColumnId = columnIds[1]
+
     rows = data["rows"]
     totalRow = data["totalRowCount"]
     rowsToUpdate = []
@@ -116,14 +122,16 @@ def update_sheet(sheetid):
         rowId = rows[i]['id']
         cells = rows[i]['cells']
         for cell in cells:
-            if cell['columnId'] == postcodeColumnId:
+            if cell['columnId'] == key_column_id:
+            # if cell['columnId'] == postcodeColumnId:
                 if "value" in cell:
                     postcode = str(int(cell["value"])).zfill(6)
                     # postcode = int(cell["value"])
                     print("postcode = ", postcode)
                 else:
                     postcode = "no postcode value"
-            if cell['columnId'] == truePostNameColumnId:
+            if cell['columnId'] == first_update_column_id:
+            # if cell['columnId'] == truePostNameColumnId:
                 if "value" in cell:
                     truePostNameExists = True
                 else:
