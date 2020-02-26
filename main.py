@@ -30,6 +30,7 @@ print(sql_pw)
 smartsheet_client = smartsheet.Smartsheet(access_token)
 # target_sheetid = os.environ.get('target_sheetid', 'Specified environment variable is not set.')
 # target_sheetid = "xxxx 1697155573409668"
+
 def hello_pubsub(event, context):
     sheetid = base64.b64decode(event['data']).decode('utf-8')
     if sheetid == target_sheetid:
