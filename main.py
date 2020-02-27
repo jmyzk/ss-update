@@ -9,9 +9,12 @@ from google.cloud import secretmanager
 with open('config.json') as f:
     data = json.load(f)
     target_sheetid = data['sheetid']
-    query = data['query']
     key_column_name = data['key_column_name']
     update_column_names = data['update_column_names']
+    dbServer = data['dbServer']
+    dbUser = data['dbUser']
+    dbName = data['dbName']
+    query = data['query']
 # target_sheetid = "xxxx 1697155573409668"
 
 print("target_sheetid: " , target_sheetid)
@@ -39,9 +42,9 @@ def updateRow(rowId, key, update_column_ids):
     try:
         # connect to mysql
         connection = mysql.connector.connect(
-            host='10.93.144.7 ',
-            database='support_center',
-            user='root',
+            host= dbServer,
+            database= dbName,
+            user= dbUser,
             password= sql_pw
         )
         print("connection.is_connected() :", connection.is_connected())
