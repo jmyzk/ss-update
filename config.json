@@ -2,6 +2,7 @@
   "sheetid": "1697155573409668",
   "key_column_name" : "局所コード",
   "update_column_names": ["正局所名","正局種","物流センター","局email","局電話","局住所"],
+  "num_rows_backward": 20,
   "dbServer": "10.93.144.7",
   "dbUser": "root",
   "dbName": "support_center",

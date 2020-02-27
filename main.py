@@ -11,6 +11,7 @@ with open('config.json') as f:
     target_sheetid = data['sheetid']
     key_column_name = data['key_column_name']
     update_column_names = data['update_column_names']
+    num_rows_backward = data['num_rows_backward']
     dbServer = data['dbServer']
     dbUser = data['dbUser']
     dbName = data['dbName']
@@ -105,7 +106,7 @@ def update_sheet(sheetid):
     totalRow = data["totalRowCount"]
     rowsToUpdate = []
     # check rows backwards
-    for i in reversed(range(totalRow-10,totalRow)):
+    for i in reversed(range(totalRow-num_rows_backward,totalRow)):
         # go backwars upto 10 rows
         rowId = rows[i]['id']
         cells = rows[i]['cells']
