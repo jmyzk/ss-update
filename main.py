@@ -106,8 +106,9 @@ def update_sheet(sheetid):
     totalRow = data["totalRowCount"]
     rowsToUpdate = []
     # check rows backwards
-    for i in reversed(range(totalRow-num_rows_backward,totalRow)):
-        # go backwars upto 10 rows
+    # use the commented out code to limit the number of rows go backward
+    # for i in reversed(range(totalRow-num_rows_backward,totalRow)):
+    for i in reversed(range(totalRow)):
         rowId = rows[i]['id']
         cells = rows[i]['cells']
         for cell in cells:
