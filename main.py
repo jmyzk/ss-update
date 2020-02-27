@@ -15,10 +15,10 @@ with open('config.json') as f:
     dbUser = data['dbUser']
     dbName = data['dbName']
     query = data['query']
-# target_sheetid = "xxxx 1697155573409668"
 
 print("target_sheetid: " , target_sheetid)
 
+# get secert from SecretManager
 def get_secret(secret_name):
     client = secretmanager.SecretManagerServiceClient()
     project_id = os.getenv('GCP_PROJECT')
@@ -28,9 +28,8 @@ def get_secret(secret_name):
     return secret_string
 
 access_token = get_secret('smartsheet-access-token')
-smartsheet_client = smartsheet.Smartsheet(access_token)
-
 sql_pw = get_secret('cloud-sql-pw')
+smartsheet_client = smartsheet.Smartsheet(access_token)
 
 def hello_pubsub(event, context):
     sheetid = base64.b64decode(event['data']).decode('utf-8')
@@ -38,7 +37,6 @@ def hello_pubsub(event, context):
         update_sheet(sheetid)
 
 def updateRow(rowId, key, update_column_ids):
-    # update_query = query + key
     try:
         # connect to mysql
         connection = mysql.connector.connect(
@@ -108,6 +106,9 @@ def update_sheet(sheetid):
     rowsToUpdate = []
     # check rows backwards
     for i in reversed(range(totalRow)):
+        # go backwars upto 10 rows
+        if totalRow-i > 10:
+            break
         rowId = rows[i]['id']
         cells = rows[i]['cells']
         for cell in cells:
@@ -115,7 +116,7 @@ def update_sheet(sheetid):
                 if "displayValue" in cell:
                     key = cell["displayValue"]
                     # key = str(int(cell["value"])).zfill(6)
-                    print("key = ", key)
+                    print("key : ", key)
                 else:
                     key = False
             if cell['columnId'] == first_update_column_id:
