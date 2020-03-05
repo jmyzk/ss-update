@@ -6,18 +6,26 @@ import json
 import os
 from google.cloud import secretmanager
 
-with open('config.json') as f:
-    data = json.load(f)
-    target_sheetid = data['sheetid']
-    key_column_name = data['key_column_name']
-    update_column_names = data['update_column_names']
-    num_rows_backward = data['num_rows_backward']
-    dbServer = data['dbServer']
-    dbUser = data['dbUser']
-    dbName = data['dbName']
-    query = data['query']
 
-print("target_sheetid: " , target_sheetid)
+with open(r'maps.json','r',encoding="utf-8") as f:
+    maps = json.load(f)
+
+class Sheet:
+    def __init__(self, id, key, column_names, column_ids):
+        self.id = id
+        self.key = key
+        self.column_names = column_names
+        self.column_ids = column_ids
+class DB:
+    def __init__(self, server, user, name):
+        self.server = server
+        self.user = user
+        self.name = name
+class Table:
+    def __init__(self, name, key, columns):
+        self.name = name
+        self.key = key
+        self.columns = columns
 
 # get secert from SecretManager
 def get_secret(secret_name):
@@ -34,10 +42,19 @@ smartsheet_client = smartsheet.Smartsheet(access_token)
 
 def hello_pubsub(event, context):
     sheetid = base64.b64decode(event['data']).decode('utf-8')
-    if sheetid == target_sheetid:
-        update_sheet(sheetid)
 
-def updateRow(rowId, key, update_column_ids):
+    for map in maps:
+        sheet = map['sheet']
+        db = map['db']
+        table = map['table']
+        sheet_object = Sheet(sheet['id'], sheet['key'], sheet['column_names'],[])
+        db_object = DB(db['server'],db['user'],db['name'])
+        table_object = Table(table['name'],table['key'],table['columns'])
+
+        if sheetid == sheet.id:
+            update_sheet(sheet_object, db_object, table_object)
+
+def updateRow(rowId, key, column_ids):
     try:
         # connect to mysql
         connection = mysql.connector.connect(
@@ -79,13 +96,12 @@ def updateRow(rowId, key, update_column_ids):
             connection.close()
             print("MySQL connection is closed")
 
-def update_sheet(sheetid):
-    smart_sheet = smartsheet_client.Sheets.get_sheet(sheetid)
+def update_sheet(sheet_object, db_object, table_object):
+    smart_sheet = smartsheet_client.Sheets.get_sheet(sheet_object.id)
     data = json.loads(str(smart_sheet))
 
     # set column_dic for target columns
     columns = data["columns"]
-    column_dic={}
     for column in columns:
         id = column["id"]
         title = column["title"]

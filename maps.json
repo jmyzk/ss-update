@@ -3,7 +3,7 @@
   "sheet":{
     "id": "1697155573409668",
     "key" : "局所コード",
-    "update_column_names": ["正局所名","正局種","物流センター","局email","局電話","局住所"],
+    "column_names": ["正局所名","正局種","物流センター","局email","局電話","局住所"],
     "num_rows_backward": 20
   },
   "db":{
@@ -14,25 +14,25 @@
   "table":{
     "name": "postcodeMaster",
     "key": "postcode",
-    "lookup_columns" : ["postName", "postType", "BC", "email","tel", "address"]
+    "columns" : ["postName", "postType", "BC", "email","tel", "address"]
   }
 },
-  {
-  "sheet":{
-    "id": "9999999999999",
-    "key" : "post局所コード",
-    "update_column_names": ["正局所名","正局種","物流センター","局email","局電話","局住所"],
-    "num_rows_backward": 20
-  },
-  "db":{
-    "server": "10.93.144.7",
-    "user": "root",
-    "name": "home_center"
-  },
-  "table":{
-    "name": "to_do",
-    "key": "item_code",
-    "lookup_columns" : ["postName", "postType", "BC", "email","tel", "address"]
-  }
+{
+"sheet":{
+  "id": "1697155573409668",
+  "key" : "局所コード",
+  "column_names": ["正局所名","正局種","物流センター","局email","局電話","局住所"],
+  "num_rows_backward": 20
+},
+"db":{
+  "server": "10.93.144.7",
+  "user": "root",
+  "name": "support_center"
+},
+"table":{
+  "name": "postcodeMaster",
+  "key": "postcode",
+  "columns" : ["postName", "postType", "BC", "email","tel", "address"]
+}
 }
 ]
