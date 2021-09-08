@@ -3,7 +3,7 @@ This sample code copies data from smartsheet and write to Appsheet using Smartsh
 
 What this code do are as follows:
 
-1 Customer inputs data through Smartsheet's form and a corresponding Smartsheet's sheet captures data.
+1 Customer inputs data through Smartsheet Form and a corresponding Sheet captures data.
 
 2 Then using Smarthsset API, correspoinding data is copied to Appsheet.
 
